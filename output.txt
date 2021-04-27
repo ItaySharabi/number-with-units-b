@@ -1,0 +1,28 @@
+Hello, World!
+read_units()
+
+Finished
+mat[r_ILS][r_USD] => 0.3003
+mat[r_USD][r_ILS] => 3.33
+mat[r_cm][r_m] => 0.01
+mat[r_g][r_kg] => 0.001
+mat[r_hour][r_min] => 60
+mat[r_kg][r_g] => 1000
+mat[r_kg][r_ton] => 0.001
+mat[r_km][r_m] => 1000
+mat[r_m][r_cm] => 100
+mat[r_m][r_km] => 0.001
+mat[r_min][r_hour] => 0.0166667
+mat[r_min][r_sec] => 60
+mat[r_sec][r_min] => 0.0166667
+mat[r_ton][r_kg] => 1000
+Unary (++) From the left
+4[m]
+Unary (++) From the left
+Unary (++) From the left
+Unary (++) From the left
+7[m]
+Unary (++) From the right ? 
+Unary (++) From the left
+7[m]
+8[m]
