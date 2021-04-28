@@ -14,19 +14,29 @@ int main () {
         cout << e.what() << endl;
     }
 
+    // string str;
+    // getline(std::cin, str, ']'); 
+
+    while (1) {
+        cout << "enter format: " << endl;
+        NumberWithUnits a(3, "r_km");
+        cin >> a;
+
+        cout << a << endl;
+    }
 
 
-    NumberWithUnits a = {3, "r_m"};
-    NumberWithUnits b = {3.0000001, "r_m"};
-    NumberWithUnits c = {3, "r_cm"};
+    // NumberWithUnits a = {3, "r_m"};
+    // NumberWithUnits b = {3.0000001, "r_m"};
+    // NumberWithUnits c = {3, "r_cm"};
 
 
-    cout << "a = " << a << ", b = " << b << ", c = " << c << endl;
+    // cout << "a = " << a << ", b = " << b << ", c = " << c << endl;
 
-    cout << boolalpha;
+    // cout << boolalpha;
 
-    cout << "a > b = " << (a > b) << endl;
-    cout << "b > a = " << (b > a) << endl;
+    // cout << "a > b = " << (a > b) << endl;
+    // cout << "b > a = " << (b > a) << endl;
 
 
 

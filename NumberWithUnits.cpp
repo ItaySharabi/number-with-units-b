@@ -46,10 +46,10 @@ double get_conversion_rate(const ariel::NumberWithUnits &n1, const ariel::Number
 
 namespace ariel{ 
 
-    /*
+    /**
         Constructor: 
-         @param num: A double value to present measures of a specified unit type.
-         @param unit_type: A string value to specify a unit type. Unit types
+         @param num(double): A double value to present measures of a specified unit type.
+         @param unit_type(string): A string value to specify a unit type. Unit types
                            are set after the call to NumberWithUnits::read_units(ifstream).
     */
     NumberWithUnits::NumberWithUnits(const double& num, const string& unit_type) {
@@ -62,18 +62,21 @@ namespace ariel{
         setUnitType(unit_type);
     }
 
-    /*
+    /**
         A method that matches trasitive units that are recieved from
         input file stream.
         Example: KM -> M
                  CM -> M => M ? -> KM != CM 
                          => ATTACH KM -> CM
                                    CM -> KM
-         @param from_unit: A double value to present measures of a specified unit type.
-         @param to_unit:   A string value to specify a unit type. Unit types
+         @param from_unit(string): A double value to present measures of a specified unit type.
+         @param to_unit(string):   A string value to specify a unit type. Unit types
                            are set after the call to NumberWithUnits::read_units(ifstream).
+         @param flag(bool): A flag that reruns the method with 
+                            opposite string values if it is set to 1.
+                            else - does nothing.
     */
-    void add_all_valid_units(const string &from_unit, const string &to_unit, bool flag) {
+    void add_all_valid_units(const string &from_unit, const string &to_unit, bool bidirectional) {
         
         string mid_unit;
         double conversion_rate;
@@ -87,37 +90,38 @@ namespace ariel{
             if(pair.first != to_unit){
                 conv_rate_mid_unit = units_map[from_unit][mid_unit]; // Get conversion rate
 
-                // calc: 1 KM = 1000 M => 1 KM = X CM ? => 1 KM = [KM->M] * (1/[M->CM])
                 conversion_rate = conv_rate_mid_unit * (1/units_map[from_unit][to_unit]);
-                units_map[mid_unit][to_unit] = 1/conversion_rate; // KM->CM
-                units_map[to_unit][mid_unit] = conversion_rate;   // CM->KM
+                units_map[mid_unit][to_unit] = 1/conversion_rate; // Ex.  KM->CM
+                units_map[to_unit][mid_unit] = conversion_rate;   // AND  CM->KM
         }
       }
 
-      if (flag) { // if flag was set to 1, rerun this method with opposite string values.
+      if (bidirectional) { // if bidirectional flag was set to 1, 
+                           // rerun this method with opposite string values.
           add_all_valid_units(to_unit, from_unit, false);
       }
     }
 
 
-    /* 
-         @param num: A double value to present measures of a specified unit type.
-         @param unit_type: A string value to specify a unit type. Unit types
+    /** 
+         @param num (double): A double value to present measures of a specified unit type.
+         @param unit_type(string): A string value to specify a unit type. Unit types
                            are set after the call to NumberWithUnits::read_units(ifstream).
     */
     void NumberWithUnits::read_units(ifstream& ifstream) {
 
         string l_unit, r_unit, oper;
         double num1,num2;
-        const int rewind = 1;
+        const int bidirectional = 1;
 
-
+        // Read from input stream seperated by ' ' (white spaces).
         while (ifstream >> num1 >> l_unit >> oper >> num2 >> r_unit) {
             if (num1 == 1 && oper == "=" && num2 > 0) {
                 units_map[l_unit][r_unit] = num2; 
                 units_map[r_unit][l_unit] = 1/num2;
 
-                add_all_valid_units(l_unit, r_unit, rewind); // Iterate over l_unit's "neighbors" to match with r_unit. 
+                add_all_valid_units(l_unit, r_unit, bidirectional); // Iterate over l_unit's "neighbors" to match with r_unit's.
+                                                                    // AND the other way around. 
             } 
         }
     }
@@ -144,12 +148,22 @@ namespace ariel{
         return *this;
     }
 
+    /** 
+        Create a copy of (this), while increasing it's value
+        and then return the copy.
+        @param a - This is a value not to use. It is being passed by itself.
+    */
     NumberWithUnits NumberWithUnits::operator++ (int a) { // post-fix inc (a++)
         NumberWithUnits copy = this->operator++();
         copy.setNumber(copy.getNumber()-1);
         return copy;
     }
 
+    /** 
+        Create a copy of (this), while increasing it's value
+        and then return the copy.
+        @param a - This is a value not to use. It is being passed by itself.
+    */
     NumberWithUnits NumberWithUnits::operator-- (int a) { // post-fix decrement (a--)
         NumberWithUnits copy = this->operator--();
         copy.setNumber(copy.getNumber()+1);
@@ -213,23 +227,6 @@ namespace ariel{
     NumberWithUnits& NumberWithUnits::operator-= (const NumberWithUnits& num) {
         NumberWithUnits neg = num;
         return (*this).operator+=((-neg));
-
-        // string u1 = getUnitType();
-        // string u2 = num.getUnitType();
-        // double a = getNumber();
-        // double b = num.getNumber();
-
-        // if(u1 != u2) { // if n1 and n2 are of same unit type
-            
-        //     double x;
-        //     x = get_conversion_rate((*this), num); // should crash if units are not convertable. 
-        //     setNumber(a - (b*x));
-        //     return *this;
-        // }
-
-        // // only if unit types are the same code will reach here:
-        // setNumber(a-b);
-        // return *this;
     }
 
 
@@ -315,25 +312,29 @@ namespace ariel{
     }
 
     istream &operator>>(istream &istream, NumberWithUnits &num)
-    {
+    {   
         string input,
         number, unit;
-
         getline(istream, input, ']'); // Empty the input stream until reaches char ']'.
-
+        bool format_validation = false;
         char c;
         unsigned int i = 0;
+        
 
         while (i < input.length())
         {
             c = input[i++];
-            if (c == ' ' || c == '[') {continue;} // Skip white-spaces
+            if (c == ' ') {continue;} // Skip white-spaces
 
-            if (char_is_a_number(c)){
-                number += c; // Append to number as strindg
+            if(c == '[') {
+                format_validation = true;
             }
+            if (char_is_a_number(c) && !format_validation){
+                number += c; // Append to number as string
+            }
+            
 
-            if (char_is_a_lower_letter(c) || char_is_a_capital_letter(c)){
+            if ((char_is_a_lower_letter(c) || char_is_a_capital_letter(c)) && format_validation){
                 unit += c; // Append to unit_type
             }
         } 
