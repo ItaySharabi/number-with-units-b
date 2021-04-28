@@ -1,4 +1,6 @@
 #include "NumberWithUnits.hpp"
+#include <map>
+#include <vector>
 
 const double EPSILON = 0.000001;
 map<string, map<string, double>> units_map;
@@ -96,18 +98,17 @@ namespace ariel{
     //   Unary Operators  //
     /*--------------------*/
 
-    NumberWithUnits& NumberWithUnits::operator+ () {
+    NumberWithUnits NumberWithUnits::operator+ () {
         cout << "Unary (+)" << endl;
         return *this;
     }
 
-    NumberWithUnits& NumberWithUnits::operator- () {
+    NumberWithUnits NumberWithUnits::operator- () {
         cout << "Unary (-)" << endl;
 
-        cout << *this << endl;
-        cout << "=========================================================" << endl;
-        setNumber(-1*getNumber());
-        return *this;
+        return NumberWithUnits(-1 * this->getNumber(), this->getUnitType());
+        // setNumber(-1*getNumber());
+        // return *this;
     }
 
     NumberWithUnits& NumberWithUnits::operator++ () { // Pre-fix increment
@@ -330,36 +331,109 @@ namespace ariel{
         }
         return input;
     }
+    
 
     bool char_is_a_number(char c) {
-        return c >= 48 || c <= 57;
+        return c >= 43 && c <= 57; // (*). (+), (-), (/), (.) AND (0-9)
     }
 
-    std::istream& operator >> (istream& input, NumberWithUnits& unit_R){
+    bool char_is_a_lower_letter(char c) {
+        return c >= 97 && c <= 122; // 'a'-'z'
+    }
+
+    bool char_is_a_capital_letter(char c) {
+        return (c >= 64 && c <= 90) || c == 95; // 'A'-'Z' OR (_)
+    }
 
 
-        // string in;
+        istream &operator>>(istream &istream, NumberWithUnits &num)
+    {
+        string input, number, unit;
 
-        // input >> in;
-        // unsigned int index = 0;
-        // char c = in.at(index);
+        getline(istream, input, ']'); // Empty the input stream until reaches char ']'.
 
-        // double val;
-
-        // while (char_is_a_number(c) && index < in.size()) {
-        //     cout << c << endl;
-        //     c = in.at(index++);
-        // }
-        double val;
         char c;
-        string in;
+        unsigned int i = 0;
+        
+        while (i < input.length())
+        {
+            c = input[i++];
+            if (c == ' ' || c == '[') {continue;} // Skip white-spaces
 
-        input >> val >> c >> skipws >> in >> skipws;
+            if (char_is_a_number(c)){
+                number += c; // Append to number as strindg
+            }
 
-        cout << "val = " << val << ", c = " << c << ", in = " << in << endl;
+            if (char_is_a_lower_letter(c) || char_is_a_capital_letter(c)){
+                unit += c; // Append to unit_type
+            }
+        } 
 
-        return input;     
+            double value = stod(number); // Convert a string to double
+
+            num = NumberWithUnits(value, unit);
+            return istream;
     }
+
+
+
+//     istream& operator>> (istream& input, NumberWithUnits& num) {
+
+//     //---------------------------------------------
+//     // Does not check format
+//     //---------------------------------------------
+//     // char ch;
+//     // return (input >> c._re >> ch >> c._im >> ch);
+//     //---------------------------------------------
+
+//     //---------------------------------------------
+//     // Checks format, with rewind on failure.
+//     //---------------------------------------------
+//     double value = 0;
+//     string unit, unit_;
+//     char c;
+
+//     // remember place for rewinding
+//     ios::pos_type startPosition = input.tellg();
+
+//     if ( (!(input >> value))                  ||
+//          (!getAndCheckNextCharIs(input,'['))) {
+        
+//         // rewind on error
+//         auto errorState = input.rdstate(); // remember error state
+//         input.clear(); // clear error so seekg will work
+//         input.seekg(startPosition); // rewind
+//         input.clear(errorState); // set back the error flag
+
+//         cout << "BAD INPUT" << endl;
+//         cout << "val: " << value << ", unit: " << unit << endl;
+//     } else {
+//         cout << "GOOD INPUT" << endl;
+//         cout << "val: " << value << ", unit: " << unit << endl;
+
+
+//         // char c;  
+
+//         // while ((c = getchar())) {
+//         //     if (c != ' ') {
+//         //         break;
+//         //     }
+//         // }
+//         // for(unsigned int i = 0; i < unit.size(); i++) {
+//         //     c = unit.at(i);
+//         //     if (c != ']') {
+//         //         unit_.push_back(c);
+//         //     }
+//         //     cout << c;
+//         // }
+//         num = NumberWithUnits(value, unit);
+
+//     }
+
+//     return input;
+//     //---------------------------------------------
+// }
+
 
     // istream& operator>> (istream& input, NumberWithUnits& num){
 

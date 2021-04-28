@@ -55,8 +55,8 @@ namespace ariel {
             /*========================*/
             //    Unary Operators     //
             /*========================*/
-            NumberWithUnits& operator+ ();
-            NumberWithUnits& operator- ();
+            NumberWithUnits operator+ ();
+            NumberWithUnits operator- ();
 
             NumberWithUnits& operator++ (); // Pre-fix-Increment (++a) inc a and return
             NumberWithUnits& operator-- ();
@@ -79,6 +79,7 @@ namespace ariel {
             friend NumberWithUnits operator* (double, const NumberWithUnits&);
             friend NumberWithUnits operator* (const NumberWithUnits&, double);
 
+            // Implement these operators using only 1 operator ( > ).
             friend bool operator> (const NumberWithUnits&, const NumberWithUnits&);
             friend bool operator>= (const NumberWithUnits&, const NumberWithUnits&);
 

@@ -17,15 +17,16 @@ int main () {
 
 
 
-    NumberWithUnits a = {3, "m"};
-
+    NumberWithUnits a = {3, "r_m"};
+    NumberWithUnits b = {3, "r_m"};
+    NumberWithUnits c = {3, "r_m"};
     cout << "a = " << a << endl;
 
-    // istringstream iss{"sec"};
+    istringstream iss{" -16 [r_m]   -7 [r_hour ]  8.8 [r_min ]"};
 
-    cin >> a;
+    iss >> a >> b >> c;
 
-    cout << "a = " << a << endl;
+    cout << "a = " << a << ", b = " << b << ", c = " << c << endl;
 
     // NumberWithUnits a{41.0035, "r_m"};
     // NumberWithUnits b(0.0035, "r_m");
