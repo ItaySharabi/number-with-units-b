@@ -316,11 +316,13 @@ namespace ariel{
         string input,
         number, unit;
         getline(istream, input, ']'); // Empty the input stream until reaches char ']'.
+        // while(!char_is_a_number(getchar()));
+        // cout << "input = " << input << endl;
+        
         bool format_validation = false;
         int count = 0;
         char c;
         unsigned int i = 0;
-        
 
         while (i < input.length())
         {
@@ -335,11 +337,10 @@ namespace ariel{
                     throw invalid_argument("Too many '['");
                 }
             }
+
             if (char_is_a_number(c) && !format_validation){
                 number += c; // Append to number as string
             }
-            
-
             if ((char_is_a_lower_letter(c) || char_is_a_capital_letter(c)) && format_validation){
                 unit += c; // Append to unit_type
             }
