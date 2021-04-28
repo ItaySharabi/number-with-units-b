@@ -99,39 +99,31 @@ namespace ariel{
     /*--------------------*/
 
     NumberWithUnits NumberWithUnits::operator+ () {
-        cout << "Unary (+)" << endl;
         return *this;
     }
 
     NumberWithUnits NumberWithUnits::operator- () {
-        cout << "Unary (-)" << endl;
 
         return NumberWithUnits(-1 * this->getNumber(), this->getUnitType());
-        // setNumber(-1*getNumber());
-        // return *this;
     }
 
     NumberWithUnits& NumberWithUnits::operator++ () { // Pre-fix increment
-        cout << "Unary (++) From the left" << endl;
         setNumber(getNumber()+1);
         return *this;
     }
 
     NumberWithUnits& NumberWithUnits::operator-- () { // Pre-fix Decrement
-        cout << "Unary (--) From the left" << endl;
         setNumber(getNumber()-1);
         return *this;
     }
 
     NumberWithUnits NumberWithUnits::operator++ (int a) { // post-fix inc (a++)
-        cout << "Unary (++) From the right ? " << endl;
         NumberWithUnits copy = this->operator++();
         copy.setNumber(copy.getNumber()-1);
         return copy;
     }
 
     NumberWithUnits NumberWithUnits::operator-- (int a) { // post-fix decrement (a--)
-        cout << "Unary (--) From the right ? " << endl;
         NumberWithUnits copy = this->operator--();
         copy.setNumber(copy.getNumber()+1);
         return copy;
@@ -354,7 +346,7 @@ namespace ariel{
 
         char c;
         unsigned int i = 0;
-        
+
         while (i < input.length())
         {
             c = input[i++];
