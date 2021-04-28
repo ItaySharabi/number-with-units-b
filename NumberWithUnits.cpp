@@ -317,6 +317,7 @@ namespace ariel{
         number, unit;
         getline(istream, input, ']'); // Empty the input stream until reaches char ']'.
         bool format_validation = false;
+        int count = 0;
         char c;
         unsigned int i = 0;
         
@@ -327,7 +328,12 @@ namespace ariel{
             if (c == ' ') {continue;} // Skip white-spaces
 
             if(c == '[') {
-                format_validation = true;
+                if(count == 0) {
+                    count++;
+                    format_validation = true;
+                } else {
+                    throw invalid_argument("Too many '['");
+                }
             }
             if (char_is_a_number(c) && !format_validation){
                 number += c; // Append to number as string
