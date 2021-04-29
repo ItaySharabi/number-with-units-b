@@ -22,11 +22,10 @@ namespace ariel {
             double number;
             std::string unit_type;
         public:
-            NumberWithUnits(const double& num, const std::string& u_type);
-            ~NumberWithUnits(){}; // Destructor
+            NumberWithUnits(double num, const std::string& unit_type);
+            ~NumberWithUnits() {} // Destructor
                         
-            static void read_units(std::ifstream& ifstream);
-
+            static void read_units(std::ifstream&);
             double getNumber() const {return this->number;}
             std::string getUnitType() const{return this->unit_type;}
             void setNumber(double n) {this->number = n;}
@@ -35,8 +34,8 @@ namespace ariel {
             /*========================*/
             //    Unary Operators     //
             /*========================*/
-            NumberWithUnits operator+ ();
-            NumberWithUnits operator- ();
+            NumberWithUnits operator+ () const;
+            NumberWithUnits operator- () const;
 
             NumberWithUnits& operator++ (); // Pre-fix-Increment (++a) inc a and return
             NumberWithUnits& operator-- ();
